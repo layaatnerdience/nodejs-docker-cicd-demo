@@ -44,6 +44,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            IMAGE_NAME=${{ env.IMAGE_NAME }}
             docker pull $IMAGE_NAME:${{ github.sha }}
             docker stop node-app || true
             docker rm node-app || true
