@@ -1,18 +1,12 @@
-# Use smaller and more secure base image
-FROM node:20-alpine
-
-# Create non-root user (security best practice)
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+FROM node:18
 
 WORKDIR /app
 
-# Copy only necessary files
-COPY server.js .
-COPY package.json .
-COPY package-lock.json .
+COPY package*.json ./
 
-# Use non-root user
-USER appuser
+RUN npm install
+
+COPY . .
 
 EXPOSE 3000
 
