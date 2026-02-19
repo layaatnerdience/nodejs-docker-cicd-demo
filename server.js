@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Node.js CI/CD Demo 🚀");
-});
+const ENV = process.env.APP_ENV || "development";
+const MESSAGE = process.env.APP_MESSAGE || "Default message";
 
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
+app.get("/", (req, res) => {
+  res.send(`Environment: ${ENV} | Message: ${MESSAGE}`);
 });
 
 app.listen(3000, () => {

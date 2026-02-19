@@ -1,32 +1,19 @@
-# ---------- BUILD STAGE ----------
-FROM node:20-alpine AS build
-
-# Set working directory
-WORKDIR /app
-
-# Copy package files first for better caching
-COPY package*.json ./
-
-# Install dependencies
-RUN npm ci
-
-# Copy the rest of the source code
-COPY . .
-
-# Run build scripts (if any, optional)
-RUN npm run build || echo "No build script found"
-
-# ---------- PRODUCTION STAGE ----------
+# Use smaller and more secure base image
 FROM node:20-alpine
 
+# Create non-root user (security best practice)
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 WORKDIR /app
 
-# Copy built app & node_modules from build stage
-COPY --from=build /app .
+# Copy only necessary files
+COPY server.js .
+COPY package.json .
+COPY package-lock.json .
 
-# Expose application port
+# Use non-root user
+USER appuser
+
 EXPOSE 3000
 
-# Default command
-CMD ["npm", "start"]
-
+CMD ["node", "server.js"]
